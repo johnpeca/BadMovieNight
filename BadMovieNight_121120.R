@@ -27,6 +27,8 @@ vSantaBunny = 'Santa and the Ice Cream Bunny'
 vSantaMuscles = 'Santa with Muscles'
 nameList = c(vEightCrazy,vSilentNight,vStarWars,vSantaMartian,vSantaBunny,vSantaMuscles)
 
+colStart = ncol(BadMovies)
+
 # Convert all preferences to numerical ranks: 1,2,3,4,4,4
 BadMovies$EightCrazy = ifelse(BadMovies$FirstChoice == vEightCrazy,1,
                                     ifelse(BadMovies$SecondChoice == vEightCrazy,2,
@@ -53,7 +55,7 @@ preferences = matrix(0L, nrow = 6, ncol = 6, dimnames = list(nameList,nameList))
 for(i in 1:6){
   for(j in 1:6){
     # column over row favored -- also, add 7 to account for number of columns
-    preferences[i,j] = sum(BadMovies[,i+7] > BadMovies[,j+7])
+    preferences[i,j] = sum(BadMovies[,i+colStart] > BadMovies[,j+colStart])
     }
 }
 
@@ -88,8 +90,8 @@ for(i in 2:6){
      }
       More_name = nameList[More]
       Less_name = nameList[Less]
-      TotalVotesMore = sum(BadMovies[,7+More]<4)
-      TotalVotesLess = sum(BadMovies[,7+Less]<4)
+      TotalVotesMore = sum(BadMovies[,colStart+More]<4)
+      TotalVotesLess = sum(BadMovies[,colStart+Less]<4)
       tally = rbind(tally,data.frame(More,More_name,
                                      Less,Less_name,
                                      Margin,Minority,
@@ -135,21 +137,12 @@ while (length(allSet)>0) {
                                       rankSum = integer()
                                       )
     for (i in Condorcet_new) {
-      Condorcet_new_ranked[i,] = c(i,sum(BadMovies[,7+i]<4))
+      Condorcet_new_ranked[i,] = c(i,sum(BadMovies[,colStart+i]<4))
     }
     Condorcet_new_ranked = Condorcet_new_ranked[order(-Condorcet_new_ranked$rankSum),]
     Condorcet_new = Condorcet_new_ranked[,1]
     Condorcet_new = Condorcet_new[!is.na(Condorcet_new)]
   }
-  # Add on step to disambiguate ranks based on total votes (tie-breaker)
-  # if (length(Condorcet_new) > 1) {
-  #   Cordorcet_new_ranked = NULL
-  #   for (i in Condorcet_new){
-  #     Cordorcet_new_ranked[nrow(Cordorcet_new_ranked)+1]=sum(BadMovies[,7+i] < 4)
-  #   }
-  #   Cordorcet_new = Condorcet_new[order(-Condorcet_new_ranked),]
-  # }
-  
   
   Condorcet_rank = c(Condorcet_rank,Condorcet_new)
 
@@ -214,6 +207,3 @@ while (Max < 0.5*Tot) {
 }
 
 output[,4:ncol(output)] = output[,4:ncol(output)] / Tot
-
-# Final output table with both rankings included
-#output = output[order(-output[,9],-output[,8],-output[,7],-output[,6],-output[,5],-output[,4]),]
