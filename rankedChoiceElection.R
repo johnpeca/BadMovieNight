@@ -11,10 +11,10 @@
 # ETL
 
 # Load the file (UPDATE with right file name/location)
-elections = read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
+election = read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
 
 # Clean column names
-names(elections)[2:4] = c('FirstChoice','SecondChoice','ThirdChoice')
+names(election)[2:4] = c('FirstChoice','SecondChoice','ThirdChoice')
 
 # Create name list (to be referenced throughout -- UPDATE for different election)
 nameList = c('Eight Crazy Nights',
@@ -24,16 +24,16 @@ nameList = c('Eight Crazy Nights',
             'Santa and the Ice Cream Bunny',
             'Santa with Muscles')
 
-colStart = ncol(elections)
+colStart = ncol(election)
 numCandidates = length(nameList)
 
 # Convert all preferences to numerical ranks: 1,2,3, and everything else is 4
 for (i  in 1:length(nameList)){
-  elections[,ncol(elections)+1] = ifelse(elections$FirstChoice == nameList[i],1,
-                                ifelse(elections$SecondChoice == nameList[i],2,
-                                ifelse(elections$ThirdChoice == nameList[i],3,4)))
+  election[,ncol(election)+1] = ifelse(election$FirstChoice == nameList[i],1,
+                                ifelse(election$SecondChoice == nameList[i],2,
+                                ifelse(election$ThirdChoice == nameList[i],3,4)))
 }
-names(elections)[(ncol(elections)-length(nameList)+1):ncol(elections)] = nameList
+names(election)[(ncol(election)-length(nameList)+1):ncol(election)] = nameList
 
 # Make an overall preferences matrix (column > row)
 preferences = matrix(0L, nrow = numCandidates, ncol = numCandidates, dimnames = list(nameList,nameList))
@@ -41,7 +41,7 @@ preferences = matrix(0L, nrow = numCandidates, ncol = numCandidates, dimnames = 
 for(i in 1:numCandidates){
   for(j in 1:numCandidates){
     # column over row favored
-    preferences[i,j] = sum(elections[,i+colStart] > elections[,j+colStart])
+    preferences[i,j] = sum(election[,i+colStart] > election[,j+colStart])
     }
 }
 
@@ -76,8 +76,8 @@ for(i in 2:numCandidates){
      }
       More_name = nameList[More]
       Less_name = nameList[Less]
-      TotalVotesMore = sum(elections[,colStart+More]<4)
-      TotalVotesLess = sum(elections[,colStart+Less]<4)
+      TotalVotesMore = sum(election[,colStart+More]<4)
+      TotalVotesLess = sum(election[,colStart+Less]<4)
       tally = rbind(tally,data.frame(More,More_name,
                                      Less,Less_name,
                                      Margin,Minority,
@@ -121,7 +121,7 @@ while (any(allSet) | Rd < numCandidates+1) {
                                       rankSum = integer()
                                       )
     for (i in Condorcet_new) {
-      Condorcet_new_ranked[i,] = c(i,sum(elections[,colStart+i]<4))
+      Condorcet_new_ranked[i,] = c(i,sum(election[,colStart+i]<4))
     }
     Condorcet_new_ranked = Condorcet_new_ranked[order(-Condorcet_new_ranked$rankSum),]
     Condorcet_new = Condorcet_new_ranked[,1]
@@ -148,9 +148,9 @@ plot(g)
 ###################################################################################
 # DETERMINE THE INSTANT-RUNOFF WINNER
 
-Tot = length(elections[,1])
+Tot = length(election[,1])
 Rd = 1
-compare = elections[,c((ncol(elections)-numCandidates+1):ncol(elections))]
+compare = election[,c((ncol(election)-numCandidates+1):ncol(election))]
 Round = NULL
 for (i in 1:numCandidates){
   Round[length(Round)+1] = length(which(compare[,i]==1))
