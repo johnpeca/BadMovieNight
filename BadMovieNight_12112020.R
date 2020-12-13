@@ -26,6 +26,7 @@ vSantaMuscles = 'Santa with Muscles'
 nameList = c(vEightCrazy,vSilentNight,vStarWars,vSantaMartian,vSantaBunny,vSantaMuscles)
 
 colStart = ncol(BadMovies)
+numCandidates = length(nameList)
 
 # Convert all preferences to numerical ranks: 1,2,3, and everything else is 4
 for (i  in 1:length(nameList)){
@@ -36,10 +37,10 @@ for (i  in 1:length(nameList)){
 names(BadMovies)[(ncol(BadMovies)-length(nameList)+1):ncol(BadMovies)] = nameList
 
 # Make an overall preferences matrix (column > row)
-preferences = matrix(0L, nrow = 6, ncol = 6, dimnames = list(nameList,nameList))
+preferences = matrix(0L, nrow = numCandidates, ncol = numCandidates, dimnames = list(nameList,nameList))
 
-for(i in 1:6){
-  for(j in 1:6){
+for(i in 1:numCandidates){
+  for(j in 1:numCandidates){
     # column over row favored
     preferences[i,j] = sum(BadMovies[,i+colStart] > BadMovies[,j+colStart])
     }
@@ -60,7 +61,7 @@ tally <- data.frame(More=integer(),
                  TotalVotesLess=integer(),
                  stringsAsFactors=FALSE) 
 
-for(i in 2:6){
+for(i in 2:numCandidates){
   for(j in 1:(i-1)){
     Margin = abs(preferences[i,j] - preferences[j,i])
     
@@ -96,7 +97,7 @@ xedges = NULL
 for (i in 1:nrow(tally)){
   x = tally[i,1]
   y = tally[i,3]
-  g = graph(edges = xedges,n=6)
+  g = graph(edges = xedges,n=numCandidates)
   if (length(all_simple_paths(g,y,x,"out")) == 0){ # only add edge if not creating a cycle
     xedges = c(xedges,x,y)
   }
@@ -110,10 +111,10 @@ for (i in 1:nrow(tally)){
 
 # Compute overall Condorcet rankings
 Condorcet_rank=NULL
-allSet = 1:6
+allSet = 1:numCandidates
 Rd = 1
 yedges = xedges
-while (any(allSet) | Rd < 7) {
+while (any(allSet) | Rd < numCandidates+1) {
   Condorcet_new = setdiff(allSet,yedges[seq(2,length(yedges),2)])
   
   if (length(Condorcet_new) > 1) {
@@ -139,8 +140,8 @@ while (any(allSet) | Rd < 7) {
   Rd = Rd + 1
 }
 
-Condorcet_rank_list = 1:6
-Condorcet_rank_list[Condorcet_rank] = 1:6
+Condorcet_rank_list = 1:numCandidates
+Condorcet_rank_list[Condorcet_rank] = 1:numCandidates
 
 g = graph(edges = nameList[c(xedges)])
 plot(g)
@@ -151,7 +152,7 @@ plot(g)
 Tot = length(BadMovies[,1])
 Rd = 1
 compare = BadMovies[,c((ncol(BadMovies)-5):ncol(BadMovies))]
-output = data.frame(id = 1:6, 
+output = data.frame(id = 1:numCandidates, 
                     nameList,
                     CondorcetRank = Condorcet_rank_list,
                     Round1 = c(length(which(compare[,1]==1)),
@@ -166,20 +167,18 @@ output = output[order(-output[,ncol(output)],output$CondorcetRank),]
 Max = output[1,ncol(output)]
 
 while (Max < 0.5*Tot) {
-  Min = output[7-Rd,1]
-  for (i in 1:6){
-    compare[,i] = ifelse(compare[,i]>compare[,Min] & compare[,i] < 8-Rd,compare[,i]-1,compare[,i])
+  Min = output[numCandidates+1-Rd,1]
+  for (i in 1:numCandidates){
+    compare[,i] = ifelse(compare[,i]>compare[,Min] & compare[,i] < numCandidates+2-Rd,compare[,i]-1,compare[,i])
   }
-  compare[,Min] = 7-Rd
+  compare[,Min] = numCandidates+1-Rd
   
-  update_output = data.frame(id = 1:6,
-                             Round = c(length(which(compare[,1]==1)),
-                                        length(which(compare[,2]==1)),
-                                        length(which(compare[,3]==1)),
-                                        length(which(compare[,4]==1)),
-                                        length(which(compare[,5]==1)),
-                                        length(which(compare[,6]==1)))
-                             )
+  Round = NULL
+  for (i in 1:numCandidates){
+    Round[length(Round)+1] = length(which(compare[,i]==1))
+  }
+  
+  update_output = data.frame(id = 1:numCandidates,Round)
   output = merge(x = output, y = update_output, by = 'id', all = TRUE)
   Rd = Rd + 1
   names(output)[ncol(output)] <- paste0('Round', Rd)
