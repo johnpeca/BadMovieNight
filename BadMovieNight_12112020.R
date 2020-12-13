@@ -151,16 +151,15 @@ plot(g)
 
 Tot = length(BadMovies[,1])
 Rd = 1
-compare = BadMovies[,c((ncol(BadMovies)-5):ncol(BadMovies))]
+compare = BadMovies[,c((ncol(BadMovies)-numCandidates+1):ncol(BadMovies))]
+Round = NULL
+for (i in 1:numCandidates){
+  Round[length(Round)+1] = length(which(compare[,i]==1))
+}
 output = data.frame(id = 1:numCandidates, 
                     nameList,
                     CondorcetRank = Condorcet_rank_list,
-                    Round1 = c(length(which(compare[,1]==1)),
-                               length(which(compare[,2]==1)),
-                               length(which(compare[,3]==1)),
-                               length(which(compare[,4]==1)),
-                               length(which(compare[,5]==1)),
-                               length(which(compare[,6]==1)))
+                    Round1 = Round
                     )
 output = output[order(-output[,ncol(output)],output$CondorcetRank),]
 
