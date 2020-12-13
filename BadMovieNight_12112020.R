@@ -181,7 +181,7 @@ while (Max < 0.5*Tot) {
   update_output = data.frame(id = 1:numCandidates,Round)
   output = merge(x = output, y = update_output, by = 'id', all = TRUE)
   Rd = Rd + 1
-  names(output)[ncol(output)] <- paste0('Round', Rd)
+  names(output)[ncol(output)] = paste0('Round', Rd)
   
   output = output[order(-output[,ncol(output)],output$CondorcetRank),]
   Max = output[1,ncol(output)]
