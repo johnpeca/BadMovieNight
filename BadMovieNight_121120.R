@@ -14,9 +14,9 @@
 BadMovies <- read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
 
 # Clean column names
-BadMovies$FirstChoice = BadMovies$Which.of.the.following.bad.movies.would.you.most.like.to.see...First.choice.
-BadMovies$SecondChoice = BadMovies$Which.of.the.following.bad.movies.would.you.most.like.to.see...Second.choice.
-BadMovies$ThirdChoice = BadMovies$Which.of.the.following.bad.movies.would.you.most.like.to.see...Third.choice.
+BadMovies$FirstChoice = BadMovies[,2]
+BadMovies$SecondChoice = BadMovies[,3]
+BadMovies$ThirdChoice = BadMovies[,4]
 
 # Create name list (to be referenced throughout)
 vEightCrazy = 'Eight Crazy Nights'
