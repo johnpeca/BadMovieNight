@@ -16,7 +16,7 @@ BadMovies <- read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Th
 # Clean column names
 names(BadMovies)[2:4] = c('FirstChoice','SecondChoice','ThirdChoice')
 
-# Create name list (to be referenced throughout)
+# Create name list (to be referenced throughout -- UPDATE for different election)
 vEightCrazy = 'Eight Crazy Nights'
 vSilentNight = 'Silent Night, Deadly Night Part 2'
 vStarWars = 'The Star Wars Holiday Special'
