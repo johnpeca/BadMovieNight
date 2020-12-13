@@ -10,7 +10,7 @@
 ###################################################################################
 # ETL
 
-# Load the file (pull results and unzip with same file name)
+# Load the file (UPDATE with right file name/location)
 BadMovies <- read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
 
 # Clean column names
