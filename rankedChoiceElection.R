@@ -11,7 +11,7 @@
 # ETL
 
 # Load the file (UPDATE with right file name/location)
-elections <- read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
+elections = read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
 
 # Clean column names
 names(elections)[2:4] = c('FirstChoice','SecondChoice','ThirdChoice')
