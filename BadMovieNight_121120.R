@@ -54,7 +54,7 @@ preferences = matrix(0L, nrow = 6, ncol = 6, dimnames = list(nameList,nameList))
 
 for(i in 1:6){
   for(j in 1:6){
-    # column over row favored -- also, add 7 to account for number of columns
+    # column over row favored
     preferences[i,j] = sum(BadMovies[,i+colStart] > BadMovies[,j+colStart])
     }
 }
@@ -115,8 +115,6 @@ for (i in 1:nrow(tally)){
     xedges = c(xedges,x,y)
   }
 }
-
-# Note did not add (1) Martians to Eight Crazy nor (2) Martians to Muscles (otherwise cycle)
 
 # Determine the Condorcet winner:
 # The Condorcet winner is the person who would win a two-candidate election 
