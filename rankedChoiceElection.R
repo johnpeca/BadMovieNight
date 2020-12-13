@@ -17,13 +17,12 @@ elections = read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday The
 names(elections)[2:4] = c('FirstChoice','SecondChoice','ThirdChoice')
 
 # Create name list (to be referenced throughout -- UPDATE for different election)
-vEightCrazy = 'Eight Crazy Nights'
-vSilentNight = 'Silent Night, Deadly Night Part 2'
-vStarWars = 'The Star Wars Holiday Special'
-vSantaMartian = 'Santa Claus Conquers the Martians'
-vSantaBunny = 'Santa and the Ice Cream Bunny'
-vSantaMuscles = 'Santa with Muscles'
-nameList = c(vEightCrazy,vSilentNight,vStarWars,vSantaMartian,vSantaBunny,vSantaMuscles)
+nameList = c('Eight Crazy Nights',
+            'Silent Night, Deadly Night Part 2',
+            'The Star Wars Holiday Special',
+            'Santa Claus Conquers the Martians',
+            'Santa and the Ice Cream Bunny',
+            'Santa with Muscles')
 
 colStart = ncol(elections)
 numCandidates = length(nameList)
