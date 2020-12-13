@@ -127,7 +127,7 @@ Condorcet_rank=NULL
 allSet = 1:6
 Rd = 1
 yedges = xedges
-while (length(allSet)>0) {
+while (any(allSet)) {
   Condorcet_new = setdiff(allSet,yedges[seq(2,length(yedges),2)])
   
   if (length(Condorcet_new) > 1) {
