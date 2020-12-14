@@ -114,6 +114,7 @@ allSet = 1:numCandidates
 Rd = 1
 yedges = xedges
 while (any(allSet) | Rd < numCandidates+1) {
+  # determine all vertices with no outgoing edges
   Condorcet_new = setdiff(allSet,yedges[seq(2,length(yedges),2)])
   
   if (length(Condorcet_new) > 1) {
@@ -142,13 +143,13 @@ while (any(allSet) | Rd < numCandidates+1) {
 Condorcet_rank_list = 1:numCandidates
 Condorcet_rank_list[Condorcet_rank] = 1:numCandidates
 
-g = graph(edges = nameList[c(xedges)])
+g = graph(edges = nameList[xedges])
 plot(g)
 
 ###################################################################################
 # DETERMINE THE INSTANT-RUNOFF WINNER
 
-Tot = length(election[,1])
+Tot = nrow(election)
 Rd = 1
 compare = election[,c((ncol(election)-numCandidates+1):ncol(election))]
 Round = NULL
