@@ -1,9 +1,12 @@
+# install.packages("aod")
+# install.packages("ggplot2")
 # install.packages("igraph")
-# 
-# library(igraph)
+# install.packages("readxl")
+# install.packages("tidyverse")
 # 
 # library(aod)
 # library(ggplot2)
+# library(igraph)
 # library(tidyverse)
 # library(readxl)
 ###################################################################################
@@ -13,13 +16,12 @@
 # Load the file (UPDATE with right file name/location)
 election = read.csv("~/Documents/COMP/events/COMP Bad Movie Night! (Holiday Themed!).csv")
 
-norankedColumns = 1 # UPDATE if more leading non-ranked columns
-
-# assumes the first norankedColumns columns can be ignored and the remaining columns are (resp) ranked choices
-choices = ncol(election)-norankedColumns
+# assumes the first nonrankedColumns columns can be ignored and the remaining columns are (resp) ranked choices
+nonrankedColumns = 1 # UPDATE if more leading non-ranked columns
+choices = ncol(election)-nonrankedColumns
 
 # Clean column names
-names(election)[norankedColumns+(1:choices)] = paste0('Choice',1:choices)
+names(election)[nonrankedColumns+(1:choices)] = paste0('Choice',1:choices)
 
 # Create name list (to be referenced throughout -- UPDATE for different election)
 nameList = c('Eight Crazy Nights',
@@ -36,7 +38,7 @@ numCandidates = length(nameList)
 for (i  in 1:length(nameList)){
   election[,ncol(election)+1] = choices + 1
   for (j in 1:choices) {
-    election[which(election[,j+norankedColumns] == nameList[i]),ncol(election)] = j
+    election[which(election[,j+nonrankedColumns] == nameList[i]),ncol(election)] = j
   }
 }
 names(election)[ncol(election)+1-numCandidates:1] = nameList
@@ -109,7 +111,7 @@ for (i in 1:nrow(tally)){
 }
 
 g = graph(edges = nameList[xedges])
-plot(g)
+plot(g,edge.arrow.size=0.5)
 
 # Determine the Condorcet winner:
 # The Condorcet winner is the person who would win a two-candidate election 
@@ -122,18 +124,23 @@ Condorcet_rank=NULL
 allSet = 1:numCandidates
 Rd = 1
 yedges = xedges
-while (any(allSet) | Rd < numCandidates+1) {
+while (any(allSet) | Rd < numCandidates + 1) {
   # determine all vertices with no outgoing edges
   Condorcet_new = setdiff(allSet,yedges[seq(2,length(yedges),2)])
   
   if (length(Condorcet_new) > 1) {
     Condorcet_new_ranked = data.frame(Condorcet_new = integer(),
-                                      rankSum = integer()
+                                      rankSum = integer(),
+                                      rankAvg = double()
                                       )
     for (i in Condorcet_new) {
-      Condorcet_new_ranked[i,] = c(i,sum(election[,colStart+i]<choices + 1))
+      Condorcet_new_ranked[i,] = c(i,
+                                   sum(election[,colStart+i]<choices + 1),
+                                   mean(election[,colStart+i])
+                                   )
     }
-    Condorcet_new_ranked = Condorcet_new_ranked[order(-Condorcet_new_ranked$rankSum),]
+    Condorcet_new_ranked = Condorcet_new_ranked[order(-Condorcet_new_ranked$rankSum,
+                                                      Condorcet_new_ranked$rankAvg),]
     Condorcet_new = Condorcet_new_ranked[,1]
     Condorcet_new = Condorcet_new[!is.na(Condorcet_new)]
   }
