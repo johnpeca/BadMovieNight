@@ -195,5 +195,4 @@ while (Max < 0.5*Tot) {
   Rd = Rd + 1
 }
 
-
 output[,4:ncol(output)] = output[,4:ncol(output)] / Tot
