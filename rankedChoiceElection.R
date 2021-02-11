@@ -35,7 +35,7 @@ colStart = ncol(election)
 numCandidates = length(nameList)
 
 # Convert all preferences to numerical ranks: e.g. 1,2,3 if 3 choices, and everything else is 4
-for (i  in 1:length(nameList)){
+for (i  in 1:numCandidates){
   election[,ncol(election)+1] = choices + 1
   for (j in 1:choices) {
     election[which(election[,j+nonrankedColumns] == nameList[i]),ncol(election)] = j
